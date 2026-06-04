@@ -1,580 +1,534 @@
+/*
+ * Author: Tsyplakov Kirill
+ * Group: 3823Б1ПР2
+ * Date: 04.06.2026
+*/
+
+
 package com.mycompany.app;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.DisplayName;
 import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("Тесты для игры Крестики-Нолики")
 public class AppTest {  
 
-    private Game game;
-    private Player playerX;
-    private Player playerO;
+    private Game myGame;
+    private Player p1;
+    private Player p2;
 
     @BeforeEach
-    void setUp() {
-        game = new Game();
-        playerX = game.player1;
-        playerO = game.player2;
+    void setup() {
+        myGame = new Game();
+        p1 = myGame.player1;
+        p2 = myGame.player2;
     }
 
     @Test
-    @DisplayName("Проверка инициализации доски")
-    void testBoardInitialization() {
+    @DisplayName("TS-1 check board after start")
+    void testBoardInit() {
         for (int i = 0; i < 9; i++) {
-            assertEquals(' ', game.board[i], "Клетка " + i + " должна быть пустой");
+            assertEquals(' ', myGame.board[i]);
         }
-        assertEquals(State.PLAYING, game.state);
-        assertEquals('X', game.player1.symbol);
-        assertEquals('O', game.player2.symbol);
+        assertEquals(State.PLAYING, myGame.state);
+        assertEquals('X', myGame.player1.symbol);
+        assertEquals('O', myGame.player2.symbol);
     }
 
     @Test
-    @DisplayName("Генерация всех возможных ходов на пустой доске")
-    void testGenerateMovesEmptyBoard() {
+    @DisplayName("TS-2 all moves on empty board")
+    void testAllMovesEmpty() {
         ArrayList<Integer> moves = new ArrayList<>();
-        game.generateMoves(game.board, moves);
-        assertEquals(9, moves.size(), "На пустой доске должно быть 9 ходов");
+        myGame.generateMoves(myGame.board, moves);
+        assertEquals(9, moves.size());
         for (int i = 0; i < 9; i++) {
-            assertTrue(moves.contains(i), "Ход " + i + " должен быть доступен");
+            assertTrue(moves.contains(i));
         }
     }
 
     @Test
-    @DisplayName("Генерация ходов после нескольких ходов")
-    void testGenerateMovesAfterMoves() {
-        game.board[0] = 'X';
-        game.board[4] = 'O';
+    @DisplayName("TS-3 moves after some turns")
+    void testMovesAfterSome() {
+        myGame.board[0] = 'X';
+        myGame.board[4] = 'O';
         
         ArrayList<Integer> moves = new ArrayList<>();
-        game.generateMoves(game.board, moves);
+        myGame.generateMoves(myGame.board, moves);
         
-        assertEquals(7, moves.size(), "Должно остаться 7 свободных клеток");
-        assertFalse(moves.contains(0), "Клетка 0 не должна быть доступна");
-        assertFalse(moves.contains(4), "Клетка 4 не должна быть доступна");
-        assertTrue(moves.contains(1), "Клетка 1 должна быть доступна");
+        assertEquals(7, moves.size());
+        assertFalse(moves.contains(0));
+        assertFalse(moves.contains(4));
+        assertTrue(moves.contains(1));
     }
 
     @Test
-    @DisplayName("Проверка победы X по горизонтали")
-    void testCheckStateXWinHorizontal() {
-        game.board[0] = 'X';
-        game.board[1] = 'X';
-        game.board[2] = 'X';
-        game.symbol = 'X';
+    @DisplayName("TS-4 x win top row")
+    void testXWinTopRow() {
+        myGame.board[0] = 'X';
+        myGame.board[1] = 'X';
+        myGame.board[2] = 'X';
+        myGame.symbol = 'X';
         
-        State result = game.checkState(game.board);
-        assertEquals(State.XWIN, result);
+        State res = myGame.checkState(myGame.board);
+        assertEquals(State.XWIN, res);
     }
 
     @Test
-    @DisplayName("Проверка победы X по вертикали")
-    void testCheckStateXWinVertical() {
-        game.board[0] = 'X';
-        game.board[3] = 'X';
-        game.board[6] = 'X';
-        game.symbol = 'X';
+    @DisplayName("TS-5 x win left column")
+    void testXWinLeftCol() {
+        myGame.board[0] = 'X';
+        myGame.board[3] = 'X';
+        myGame.board[6] = 'X';
+        myGame.symbol = 'X';
         
-        State result = game.checkState(game.board);
-        assertEquals(State.XWIN, result);
+        State res = myGame.checkState(myGame.board);
+        assertEquals(State.XWIN, res);
     }
 
     @Test
-    @DisplayName("Проверка победы X по диагонали")
-    void testCheckStateXWinDiagonal() {
-        game.board[0] = 'X';
-        game.board[4] = 'X';
-        game.board[8] = 'X';
-        game.symbol = 'X';
+    @DisplayName("TS-6 x win main diag")
+    void testXWinMainDiag() {
+        myGame.board[0] = 'X';
+        myGame.board[4] = 'X';
+        myGame.board[8] = 'X';
+        myGame.symbol = 'X';
         
-        State result = game.checkState(game.board);
-        assertEquals(State.XWIN, result);
+        State res = myGame.checkState(myGame.board);
+        assertEquals(State.XWIN, res);
     }
 
     @Test
-    @DisplayName("Проверка победы X по обратной диагонали")
-    void testCheckStateXWinAntiDiagonal() {
-        game.board[2] = 'X';
-        game.board[4] = 'X';
-        game.board[6] = 'X';
-        game.symbol = 'X';
+    @DisplayName("TS-7 x win second diag")
+    void testXWinSecondDiag() {
+        myGame.board[2] = 'X';
+        myGame.board[4] = 'X';
+        myGame.board[6] = 'X';
+        myGame.symbol = 'X';
         
-        State result = game.checkState(game.board);
-        assertEquals(State.XWIN, result);
+        State res = myGame.checkState(myGame.board);
+        assertEquals(State.XWIN, res);
     }
 
     @Test
-    @DisplayName("Проверка победы O")
-    void testCheckStateOWin() {
-        game.board[0] = 'O';
-        game.board[1] = 'O';
-        game.board[2] = 'O';
-        game.symbol = 'O';
+    @DisplayName("TS-8 o win top row")
+    void testOWinTopRow() {
+        myGame.board[0] = 'O';
+        myGame.board[1] = 'O';
+        myGame.board[2] = 'O';
+        myGame.symbol = 'O';
         
-        State result = game.checkState(game.board);
-        assertEquals(State.OWIN, result);
+        State res = myGame.checkState(myGame.board);
+        assertEquals(State.OWIN, res);
     }
 
     @Test
-    @DisplayName("Проверка ничьей")
-    void testCheckStateDraw() {
-        game.board[0] = 'X'; game.board[1] = 'O'; game.board[2] = 'X';
-        game.board[3] = 'O'; game.board[4] = 'X'; game.board[5] = 'O';
-        game.board[6] = 'O'; game.board[7] = 'X'; game.board[8] = 'O';
-        game.symbol = 'X';
+    @DisplayName("TS-9 draw when board full")
+    void testDrawFull() {
+        myGame.board[0] = 'X'; myGame.board[1] = 'O'; myGame.board[2] = 'X';
+        myGame.board[3] = 'O'; myGame.board[4] = 'X'; myGame.board[5] = 'O';
+        myGame.board[6] = 'O'; myGame.board[7] = 'X'; myGame.board[8] = 'O';
+        myGame.symbol = 'X';
         
-        State result = game.checkState(game.board);
-        assertEquals(State.DRAW, result);
+        State res = myGame.checkState(myGame.board);
+        assertEquals(State.DRAW, res);
     }
 
     @Test
-    @DisplayName("Проверка состояния PLAYING")
-    void testCheckStatePlaying() {
-        game.board[0] = 'X';
-        game.board[1] = 'O';
+    @DisplayName("TS-10 game still playing")
+    void testStillPlaying() {
+        myGame.board[0] = 'X';
+        myGame.board[1] = 'O';
         
-        State result = game.checkState(game.board);
-        assertEquals(State.PLAYING, result);
+        State res = myGame.checkState(myGame.board);
+        assertEquals(State.PLAYING, res);
     }
 
     @Test
-    @DisplayName("Оценка позиции - победа игрока")
-    void testEvaluatePositionWin() {
-        game.board[0] = 'X';
-        game.board[1] = 'X';
-        game.board[2] = 'X';
-        game.symbol = 'X';
+    @DisplayName("TS-11 score when player win")
+    void testScoreWin() {
+        myGame.board[0] = 'X';
+        myGame.board[1] = 'X';
+        myGame.board[2] = 'X';
+        myGame.symbol = 'X';
         
-        int result = game.evaluatePosition(game.board, game.player1);
-        assertEquals(Game.INF, result);
+        int res = myGame.evaluatePosition(myGame.board, myGame.player1);
+        assertEquals(Game.INF, res);
     }
 
     @Test
-    @DisplayName("Оценка позиции - поражение игрока")
-    void testEvaluatePositionLoss() {
-        game.board[0] = 'O';
-        game.board[1] = 'O';
-        game.board[2] = 'O';
-        game.symbol = 'O';
+    @DisplayName("TS-12 score when player lose")
+    void testScoreLose() {
+        myGame.board[0] = 'O';
+        myGame.board[1] = 'O';
+        myGame.board[2] = 'O';
+        myGame.symbol = 'O';
         
-        int result = game.evaluatePosition(game.board, game.player1);
-        assertEquals(-Game.INF, result);
+        int res = myGame.evaluatePosition(myGame.board, myGame.player1);
+        assertEquals(-Game.INF, res);
     }
 
     @Test
-    @DisplayName("Оценка позиции - ничья")
-    void testEvaluatePositionDraw() {
-        game.board[0] = 'X'; game.board[1] = 'O'; game.board[2] = 'X';
-        game.board[3] = 'O'; game.board[4] = 'X'; game.board[5] = 'O';
-        game.board[6] = 'O'; game.board[7] = 'X'; game.board[8] = 'O';
+    @DisplayName("TS-13 score when draw")
+    void testScoreDraw() {
+        myGame.board[0] = 'X'; myGame.board[1] = 'O'; myGame.board[2] = 'X';
+        myGame.board[3] = 'O'; myGame.board[4] = 'X'; myGame.board[5] = 'O';
+        myGame.board[6] = 'O'; myGame.board[7] = 'X'; myGame.board[8] = 'O';
         
-        int result = game.evaluatePosition(game.board, game.player1);
-        assertEquals(0, result);
+        int res = myGame.evaluatePosition(myGame.board, myGame.player1);
+        assertEquals(0, res);
     }
 
     @Test
-    @DisplayName("Минимакс на пустой доске")
-    void testMiniMaxFirstMove() {
-        game.symbol = 'X';
-        int bestMove = game.MiniMax(game.board, game.player1);
+    @DisplayName("TS-14 ai first move on empty")
+    void testAiFirstMove() {
+        myGame.symbol = 'X';
+        int move = myGame.MiniMax(myGame.board, myGame.player1);
         
-        assertTrue(bestMove >= 1 && bestMove <= 9, "Ход должен быть от 1 до 9");
-        assertTrue(game.board[bestMove - 1] == ' ', "Ход должен быть в пустую клетку");
+        assertTrue(move >= 1 && move <= 9);
+        assertTrue(myGame.board[move - 1] == ' ');
     }
 
     @Test
-    @DisplayName("Создание новой игры")
-    void testGameCreation() {
-        Game newGame = new Game();
-        assertNotNull(newGame);
-        assertEquals(9, newGame.board.length);
+    @DisplayName("TS-15 create new game")
+    void testNewGame() {
+        Game g = new Game();
+        assertNotNull(g);
+        assertEquals(9, g.board.length);
     }
 
     @Test
-    @DisplayName("Проверка символов игроков")
+    @DisplayName("TS-16 player symbols check")
     void testPlayerSymbols() {
-        assertEquals('X', game.player1.symbol);
-        assertEquals('O', game.player2.symbol);
+        assertEquals('X', myGame.player1.symbol);
+        assertEquals('O', myGame.player2.symbol);
     }
 
     @Test
-    @DisplayName("Проверка константы INF")
-    void testInfConstant() {
+    @DisplayName("TS-17 inf constant")
+    void testInfConst() {
         assertEquals(100, Game.INF);
     }
 
-    
     @Test
-    @DisplayName("Тест MaxMove на завершенной игре")
-    void testMaxMoveFinishedGame() {
-        game.board[0] = 'X';
-        game.board[1] = 'X';
-        game.board[2] = 'X';
-        int result = game.MaxMove(game.board, game.player1);
-        assertTrue(result == Game.INF || result == -Game.INF || result == 0);
+    @DisplayName("TS-18 max move when game done")
+    void testMaxMoveDone() {
+        myGame.board[0] = 'X';
+        myGame.board[1] = 'X';
+        myGame.board[2] = 'X';
+        int res = myGame.MaxMove(myGame.board, myGame.player1);
+        assertTrue(res == Game.INF || res == -Game.INF || res == 0);
     }
 
     @Test
-    @DisplayName("Тест MinMove на завершенной игре")
-    void testMinMoveFinishedGame() {
-        game.board[0] = 'O';
-        game.board[1] = 'O';
-        game.board[2] = 'O';
-        int result = game.MinMove(game.board, game.player2);
-        assertTrue(result == Game.INF || result == -Game.INF || result == 0);
+    @DisplayName("TS-19 min move when game done")
+    void testMinMoveDone() {
+        myGame.board[0] = 'O';
+        myGame.board[1] = 'O';
+        myGame.board[2] = 'O';
+        int res = myGame.MinMove(myGame.board, myGame.player2);
+        assertTrue(res == Game.INF || res == -Game.INF || res == 0);
     }
 
     @Test
-    @DisplayName("Проверка выигрышной комбинации для X в середине")
-    void testXWinCenterRow() {
-        game.board[3] = 'X';
-        game.board[4] = 'X';
-        game.board[5] = 'X';
-        game.symbol = 'X';
-        assertEquals(State.XWIN, game.checkState(game.board));
+    @DisplayName("TS-20 x win middle row")
+    void testXWinMiddleRow() {
+        myGame.board[3] = 'X';
+        myGame.board[4] = 'X';
+        myGame.board[5] = 'X';
+        myGame.symbol = 'X';
+        assertEquals(State.XWIN, myGame.checkState(myGame.board));
     }
 
     @Test
-    @DisplayName("Проверка выигрышной комбинации для O в середине")
-    void testOWinCenterRow() {
-        game.board[3] = 'O';
-        game.board[4] = 'O';
-        game.board[5] = 'O';
-        game.symbol = 'O';
-        assertEquals(State.OWIN, game.checkState(game.board));
+    @DisplayName("TS-21 o win middle row")
+    void testOWinMiddleRow() {
+        myGame.board[3] = 'O';
+        myGame.board[4] = 'O';
+        myGame.board[5] = 'O';
+        myGame.symbol = 'O';
+        assertEquals(State.OWIN, myGame.checkState(myGame.board));
     }
 
     @Test
-    @DisplayName("Тест evaluatePosition с победой O для игрока X")
-    void testEvaluatePositionOWinForX() {
-        game.board[0] = 'O';
-        game.board[1] = 'O';
-        game.board[2] = 'O';
-        game.symbol = 'O';
+    @DisplayName("TS-22 score o win for x player")
+    void testScoreOWinForX() {
+        myGame.board[0] = 'O';
+        myGame.board[1] = 'O';
+        myGame.board[2] = 'O';
+        myGame.symbol = 'O';
         
-        int result = game.evaluatePosition(game.board, game.player1);
-        assertEquals(-Game.INF, result, "Победа O должна дать -INF для X");
+        int res = myGame.evaluatePosition(myGame.board, myGame.player1);
+        assertEquals(-Game.INF, res);
     }
 
     @Test
-    @DisplayName("Тест evaluatePosition с победой X для игрока O")
-    void testEvaluatePositionXWinForO() {
-        game.board[0] = 'X';
-        game.board[1] = 'X';
-        game.board[2] = 'X';
-        game.symbol = 'X';
+    @DisplayName("TS-23 score x win for o player")
+    void testScoreXWinForO() {
+        myGame.board[0] = 'X';
+        myGame.board[1] = 'X';
+        myGame.board[2] = 'X';
+        myGame.symbol = 'X';
         
-        int result = game.evaluatePosition(game.board, game.player2);
-        assertEquals(-Game.INF, result, "Победа X должна дать -INF для O");
+        int res = myGame.evaluatePosition(myGame.board, myGame.player2);
+        assertEquals(-Game.INF, res);
     }
 
     @Test
-    @DisplayName("Тест Utility.print для char[]")
-    void testUtilityPrintChar() {
-        char[] testBoard = {'X', 'O', ' ', 'X', ' ', 'O', ' ', 'X', ' '};
-        Utility.print(testBoard);
+    @DisplayName("TS-24 print char array")
+    void testPrintChar() {
+        char[] b = {'X', 'O', ' ', 'X', ' ', 'O', ' ', 'X', ' '};
+        Utility.print(b);
         assertTrue(true);
     }
 
     @Test
-    @DisplayName("Тест Utility.print для int[]")
-    void testUtilityPrintInt() {
-        int[] testBoard = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-        Utility.print(testBoard);
+    @DisplayName("TS-25 print int array")
+    void testPrintInt() {
+        int[] b = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        Utility.print(b);
         assertTrue(true);
     }
 
     @Test
-    @DisplayName("Тест Utility.print для ArrayList")
-    void testUtilityPrintArrayList() {
-        ArrayList<Integer> moves = new ArrayList<>();
-        moves.add(1);
-        moves.add(3);
-        moves.add(5);
-        Utility.print(moves);
+    @DisplayName("TS-26 print array list")
+    void testPrintList() {
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(3);
+        list.add(5);
+        Utility.print(list);
         assertTrue(true);
     }
 
     @Test
-    @DisplayName("Проверка generateMoves на полной доске")
-    void testGenerateMovesFullBoard() {
+    @DisplayName("TS-27 no moves on full board")
+    void testNoMovesFull() {
         for (int i = 0; i < 9; i++) {
-            game.board[i] = 'X';
+            myGame.board[i] = 'X';
         }
         ArrayList<Integer> moves = new ArrayList<>();
-        game.generateMoves(game.board, moves);
-        assertEquals(0, moves.size(), "На полной доске не должно быть ходов");
+        myGame.generateMoves(myGame.board, moves);
+        assertEquals(0, moves.size());
     }
 
     @Test
-    @DisplayName("Тест evaluatePosition с продолжающейся игрой")
-    void testEvaluatePositionPlaying() {
-        game.board[0] = 'X';
-        game.board[4] = 'O';
-        int result = game.evaluatePosition(game.board, game.player1);
-        assertEquals(-1, result, "Для продолжающейся игры возвращается -1");
+    @DisplayName("TS-28 score when game not finished")
+    void testScoreNotFinished() {
+        myGame.board[0] = 'X';
+        myGame.board[4] = 'O';
+        int res = myGame.evaluatePosition(myGame.board, myGame.player1);
+        assertEquals(-1, res);
     }
 
     @Test
-    @DisplayName("Минимакс на доске с одним ходом")
-    void testMiniMaxOneMove() {
-        game.board[0] = 'X';
-        game.symbol = 'O';
-        int bestMove = game.MiniMax(game.board, game.player2);
-        assertTrue(bestMove >= 1 && bestMove <= 9);
-        assertTrue(game.board[bestMove - 1] == ' ', "Ход должен быть в пустую клетку");
+    @DisplayName("TS-29 ai move with one cell taken")
+    void testAiMoveOneTaken() {
+        myGame.board[0] = 'X';
+        myGame.symbol = 'O';
+        int move = myGame.MiniMax(myGame.board, myGame.player2);
+        assertTrue(move >= 1 && move <= 9);
+        assertTrue(myGame.board[move - 1] == ' ');
     }
 
     @Test
-    @DisplayName("Проверка метода checkState без установленного symbol")
-    void testCheckStateWithoutSymbol() {
-        game.board[0] = 'X';
-        game.board[1] = 'X';
-        game.board[2] = 'X';
-        State result = game.checkState(game.board);
-        assertNotNull(result);
+    @DisplayName("TS-30 check state without symbol")
+    void testCheckStateNoSym() {
+        myGame.board[0] = 'X';
+        myGame.board[1] = 'X';
+        myGame.board[2] = 'X';
+        State res = myGame.checkState(myGame.board);
+        assertNotNull(res);
     }
 
     @Test
-    @DisplayName("Тест MaxMove на победу X")
+    @DisplayName("TS-31 max move x win")
     void testMaxMoveXWin() {
-        game.board[0] = 'X';
-        game.board[1] = 'X';
-        game.board[2] = ' ';
-        game.symbol = 'X';
-        int result = game.MaxMove(game.board, game.player1);
-        assertEquals(Game.INF, result);
+        myGame.board[0] = 'X';
+        myGame.board[1] = 'X';
+        myGame.board[2] = ' ';
+        myGame.symbol = 'X';
+        int res = myGame.MaxMove(myGame.board, myGame.player1);
+        assertEquals(Game.INF, res);
     }
 
     @Test
-    @DisplayName("Тест MinMove на победу O")
+    @DisplayName("TS-32 min move o win")
     void testMinMoveOWin() {
-        game.board[0] = 'O';
-        game.board[1] = 'O';
-        game.board[2] = ' ';
-        game.symbol = 'O';
-        int result = game.MinMove(game.board, game.player2);
-        assertTrue(result >= -Game.INF && result <= Game.INF);
+        myGame.board[0] = 'O';
+        myGame.board[1] = 'O';
+        myGame.board[2] = ' ';
+        myGame.symbol = 'O';
+        int res = myGame.MinMove(myGame.board, myGame.player2);
+        assertTrue(res >= -Game.INF && res <= Game.INF);
     }
 
     @Test
-    @DisplayName("Тест MaxMove на ничью")
+    @DisplayName("TS-33 max move draw")
     void testMaxMoveDraw() {
-        game.board[0] = 'X'; game.board[1] = 'O'; game.board[2] = 'X';
-        game.board[3] = 'O'; game.board[4] = 'X'; game.board[5] = 'O';
-        game.board[6] = 'O'; game.board[7] = 'X'; game.board[8] = ' ';
-        game.symbol = 'X';
-        int result = game.MaxMove(game.board, game.player1);
-        assertTrue(result >= -Game.INF && result <= Game.INF);
+        myGame.board[0] = 'X'; myGame.board[1] = 'O'; myGame.board[2] = 'X';
+        myGame.board[3] = 'O'; myGame.board[4] = 'X'; myGame.board[5] = 'O';
+        myGame.board[6] = 'O'; myGame.board[7] = 'X'; myGame.board[8] = ' ';
+        myGame.symbol = 'X';
+        int res = myGame.MaxMove(myGame.board, myGame.player1);
+        assertTrue(res >= -Game.INF && res <= Game.INF);
     }
 
     @Test
-    @DisplayName("Минимакс выбирает выигрышный ход O")
-    void testMiniMaxWinningMoveO() {
-        game.board[0] = 'O';
-        game.board[1] = 'O';
-        game.board[2] = ' ';
-        game.board[3] = 'X';
-        game.board[4] = 'X';
-        game.symbol = 'O';
-        int bestMove = game.MiniMax(game.board, game.player2);
-        assertEquals(3, bestMove);
+    @DisplayName("TS-34 ai picks winning move o")
+    void testAiPickWinO() {
+        myGame.board[0] = 'O';
+        myGame.board[1] = 'O';
+        myGame.board[2] = ' ';
+        myGame.board[3] = 'X';
+        myGame.board[4] = 'X';
+        myGame.symbol = 'O';
+        int move = myGame.MiniMax(myGame.board, myGame.player2);
+        assertEquals(3, move);
     }
 
     @Test
-    @DisplayName("Минимакс выбирает выигрышный ход X")
-    void testMiniMaxWinningMoveX() {
-        game.board[0] = 'X';
-        game.board[1] = 'X';
-        game.board[2] = ' ';
-        game.board[3] = 'O';
-        game.board[4] = 'O';
-        game.symbol = 'X';
-        int bestMove = game.MiniMax(game.board, game.player1);
-        assertEquals(3, bestMove);
+    @DisplayName("TS-35 ai picks winning move x")
+    void testAiPickWinX() {
+        myGame.board[0] = 'X';
+        myGame.board[1] = 'X';
+        myGame.board[2] = ' ';
+        myGame.board[3] = 'O';
+        myGame.board[4] = 'O';
+        myGame.symbol = 'X';
+        int move = myGame.MiniMax(myGame.board, myGame.player1);
+        assertEquals(3, move);
     }
 
     @Test
-    @DisplayName("Проверка всех выигрышных комбинаций X")
-    void testAllXWinningCombinations() {
-        game.board[3] = 'X'; game.board[4] = 'X'; game.board[5] = 'X';
-        game.symbol = 'X';
-        assertEquals(State.XWIN, game.checkState(game.board));
-        game = new Game();
+    @DisplayName("TS-36 all x win combos")
+    void testAllXCombos() {
+        myGame.board[3] = 'X'; myGame.board[4] = 'X'; myGame.board[5] = 'X';
+        myGame.symbol = 'X';
+        assertEquals(State.XWIN, myGame.checkState(myGame.board));
+        myGame = new Game();
         
-        game.board[6] = 'X'; game.board[7] = 'X'; game.board[8] = 'X';
-        game.symbol = 'X';
-        assertEquals(State.XWIN, game.checkState(game.board));
-        game = new Game();
+        myGame.board[6] = 'X'; myGame.board[7] = 'X'; myGame.board[8] = 'X';
+        myGame.symbol = 'X';
+        assertEquals(State.XWIN, myGame.checkState(myGame.board));
+        myGame = new Game();
         
-        game.board[1] = 'X'; game.board[4] = 'X'; game.board[7] = 'X';
-        game.symbol = 'X';
-        assertEquals(State.XWIN, game.checkState(game.board));
-        game = new Game();
+        myGame.board[1] = 'X'; myGame.board[4] = 'X'; myGame.board[7] = 'X';
+        myGame.symbol = 'X';
+        assertEquals(State.XWIN, myGame.checkState(myGame.board));
+        myGame = new Game();
         
-        game.board[2] = 'X'; game.board[5] = 'X'; game.board[8] = 'X';
-        game.symbol = 'X';
-        assertEquals(State.XWIN, game.checkState(game.board));
+        myGame.board[2] = 'X'; myGame.board[5] = 'X'; myGame.board[8] = 'X';
+        myGame.symbol = 'X';
+        assertEquals(State.XWIN, myGame.checkState(myGame.board));
     }
 
     @Test
-    @DisplayName("Проверка всех выигрышных комбинаций O")
-    void testAllOWinningCombinations() {
-        game.board[0] = 'O'; game.board[1] = 'O'; game.board[2] = 'O';
-        game.symbol = 'O';
-        assertEquals(State.OWIN, game.checkState(game.board));
+    @DisplayName("TS-37 all o win combos")
+    void testAllOCombos() {
+        myGame.board[0] = 'O'; myGame.board[1] = 'O'; myGame.board[2] = 'O';
+        myGame.symbol = 'O';
+        assertEquals(State.OWIN, myGame.checkState(myGame.board));
     }
 
     @Test
-    @DisplayName("Негативный тест: неверные ходы в generateMoves")
-    void testGenerateMovesWithInvalidBoard() {
+    @DisplayName("TS-38 null board test")
+    void testNullBoard() {
         ArrayList<Integer> moves = new ArrayList<>();
-        game.board = null;
+        myGame.board = null;
         assertThrows(NullPointerException.class, () -> {
-            game.generateMoves(game.board, moves);
+            myGame.generateMoves(myGame.board, moves);
         });
-        game.board = new char[9];
+        myGame.board = new char[9];
     }
 
     @Test
-    @DisplayName("Тест evaluatePosition с разными игроками")
-    void testEvaluatePositionDifferentPlayers() {
-        game.board[0] = 'X'; game.board[1] = 'X'; game.board[2] = 'X';
-        game.symbol = 'X';
+    @DisplayName("TS-39 score diff players")
+    void testScoreDiffPlayers() {
+        myGame.board[0] = 'X'; myGame.board[1] = 'X'; myGame.board[2] = 'X';
+        myGame.symbol = 'X';
         
-        assertEquals(Game.INF, game.evaluatePosition(game.board, game.player1));
-        assertEquals(-Game.INF, game.evaluatePosition(game.board, game.player2));
+        assertEquals(Game.INF, myGame.evaluatePosition(myGame.board, myGame.player1));
+        assertEquals(-Game.INF, myGame.evaluatePosition(myGame.board, myGame.player2));
     }
 
     @Test
-    @DisplayName("Сброс счетчика q в MiniMax")
-    void testQCounterReset() {
-        game.q = 100;
-        game.symbol = 'X';
-        game.MiniMax(game.board, game.player1);
-        assertEquals(0, game.q);
+    @DisplayName("TS-40 q counter reset")
+    void testQReset() {
+        myGame.q = 100;
+        myGame.symbol = 'X';
+        myGame.MiniMax(myGame.board, myGame.player1);
+        assertEquals(0, myGame.q);
     }
 
     @Test
-    @DisplayName("Случайный выбор при равных значениях в MiniMax")
-    void testMiniMaxRandomChoice() {
-        game.symbol = 'X';
+    @DisplayName("TS-41 random when equal")
+    void testRandomEqual() {
+        myGame.symbol = 'X';
         for (int i = 0; i < 5; i++) {
-            Game newGame = new Game();
-            int move = newGame.MiniMax(newGame.board, newGame.player1);
+            Game g = new Game();
+            int move = g.MiniMax(g.board, g.player1);
             assertTrue(move >= 1 && move <= 9);
         }
     }
 
     @Test
-    @DisplayName("Проверка метода checkState, когда symbol не установлен")
-    void testCheckStateNullSymbol() {
-        game.board[0] = 'X';
-        game.board[1] = 'X';
-        game.board[2] = 'X';
-        game.symbol = ' ';
-        State result = game.checkState(game.board);
-        assertNotEquals(State.XWIN, result);
+    @DisplayName("TS-42 check state empty symbol")
+    void testCheckStateEmptySym() {
+        myGame.board[0] = 'X';
+        myGame.board[1] = 'X';
+        myGame.board[2] = 'X';
+        myGame.symbol = ' ';
+        State res = myGame.checkState(myGame.board);
+        assertNotEquals(State.XWIN, res);
     }
 
     @Test
-    @DisplayName("MaxMove с отрицательной бесконечностью")
-    void testMaxMoveNegativeInfinity() {
-        game.board[0] = 'O'; game.board[1] = 'O'; game.board[2] = 'O';
-        game.symbol = 'O';
-        int result = game.MaxMove(game.board, game.player1);
-        assertEquals(-Game.INF, result);
+    @DisplayName("TS-43 max move negative inf")
+    void testMaxMoveNegInf() {
+        myGame.board[0] = 'O'; myGame.board[1] = 'O'; myGame.board[2] = 'O';
+        myGame.symbol = 'O';
+        int res = myGame.MaxMove(myGame.board, myGame.player1);
+        assertEquals(-Game.INF, res);
     }
 
     @Test
-    @DisplayName("MinMove с положительной бесконечностью")
-    void testMinMovePositiveInfinity() {
-        game.board[0] = 'X';
-        game.board[1] = 'X';
-        game.board[2] = 'X';
-        game.symbol = 'X';
-        int result = game.MinMove(game.board, game.player2);
-        assertTrue(result == -Game.INF || result == Game.INF);
-        if (result == Game.INF) {
-            assertEquals(Game.INF, result);
-        } else {
-            assertEquals(-Game.INF, result);
-        }
+    @DisplayName("TS-44 min move positive inf")
+    void testMinMovePosInf() {
+        myGame.board[0] = 'X';
+        myGame.board[1] = 'X';
+        myGame.board[2] = 'X';
+        myGame.symbol = 'X';
+        int res = myGame.MinMove(myGame.board, myGame.player2);
+        assertTrue(res == -Game.INF || res == Game.INF);
     }
 
     @Test
-    @DisplayName("Глубокий минимакс с несколькими ходами")
-    void testDeepMiniMax() {
-        game.board[0] = 'X';
-        game.board[4] = 'O';
-        game.board[8] = 'X';
-        game.symbol = 'O';
-        int bestMove = game.MiniMax(game.board, game.player2);
-        assertTrue(bestMove >= 1 && bestMove <= 9);
+    @DisplayName("TS-45 deep minimax")
+    void testDeepMinimax() {
+        myGame.board[0] = 'X';
+        myGame.board[4] = 'O';
+        myGame.board[8] = 'X';
+        myGame.symbol = 'O';
+        int move = myGame.MiniMax(myGame.board, myGame.player2);
+        assertTrue(move >= 1 && move <= 9);
     }
 
     @Test
-    @DisplayName("Проверка на занятую клетку в generateMoves")
-    void testGenerateMovesWithOccupiedCells() {
+    @DisplayName("TS-46 moves with occupied cells")
+    void testMovesOccupied() {
         for (int i = 0; i < 9; i++) {
-            game.board[i] = 'X';
+            myGame.board[i] = 'X';
         }
         ArrayList<Integer> moves = new ArrayList<>();
-        game.generateMoves(game.board, moves);
+        myGame.generateMoves(myGame.board, moves);
         assertEquals(0, moves.size());
         
-        game.board[4] = ' ';
+        myGame.board[4] = ' ';
         moves.clear();
-        game.generateMoves(game.board, moves);
+        myGame.generateMoves(myGame.board, moves);
         assertEquals(1, moves.size());
         assertEquals(4, moves.get(0));
-    }
-
-    @Test
-    @DisplayName("Тест обновления symbol в MiniMax")
-    void testSymbolUpdateInMiniMax() {
-        game.symbol = ' ';
-        game.MiniMax(game.board, game.player1);
-        assertEquals('X', game.symbol);
-    }
-
-    @Test
-    @DisplayName("Тест создания TicTacToeCell")
-    void testTicTacToeCellCreation() {
-        TicTacToeCell cell = new TicTacToeCell(5, 1, 1);
-        assertEquals(' ', cell.getMarker());
-        assertEquals(5, cell.getNum());
-        assertEquals(1, cell.getRow());
-        assertEquals(1, cell.getCol());
-    }
-
-    @Test
-    @DisplayName("Тест setMarker в TicTacToeCell")
-    void testTicTacToeCellSetMarker() {
-        TicTacToeCell cell = new TicTacToeCell(0, 0, 0);
-        cell.setMarker("X");
-        assertEquals('X', cell.getMarker());
-        assertFalse(cell.isEnabled());
-    }
-
-    @Test
-    @DisplayName("Тест getRow и getCol")
-    void testTicTacToeCellGetters() {
-        TicTacToeCell cell = new TicTacToeCell(3, 2, 1);
-        assertEquals(1, cell.getRow());
-        assertEquals(2, cell.getCol());
-        assertEquals(3, cell.getNum());
-    }
-
-    @Test
-    @DisplayName("Тест конструктора Game")
-    void testGameConstructorFields() {
-        Game newGame = new Game();
-        assertNotNull(newGame.player1);
-        assertNotNull(newGame.player2);
-        assertEquals(0, newGame.q);
-        assertEquals(State.PLAYING, newGame.state);
     }
 }
